@@ -1,0 +1,143 @@
+/* PAGE */
+.spa-page {
+  font-family: "Poppins", sans-serif;
+  color: #333;
+}
+
+/* HERO SECTION */
+.spa-hero {
+  position: relative;
+  width: 100%;
+  height: 90vh;
+  overflow: hidden;
+}
+
+.spa-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(65%);
+}
+
+.spa-title {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 64px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.spa-sub {
+  position: absolute;
+  top: 52%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #e8e8e8;
+  font-size: 22px;
+}
+
+/* SECTION TITLE */
+.section-title {
+  text-align: center;
+  font-size: 36px;
+  margin-top: 40px;
+  margin-bottom: 30px;
+  font-weight: bold;
+}
+
+/* SERVICES */
+.spa-services {
+  padding: 30px;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+}
+
+.service-card {
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+  transition: 0.3s;
+  padding-bottom: 10px;
+}
+
+.service-card:hover {
+  transform: translateY(-6px);
+}
+
+.service-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.service-card h3 {
+  margin: 15px;
+  font-size: 22px;
+}
+
+.service-card p {
+  margin: 0 15px 15px;
+  font-size: 15px;
+  color: #666;
+}
+
+/* AMBIENCE GALLERY */
+.spa-ambience {
+  padding: 20px;
+}
+
+.ambience-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 15px;
+}
+
+.ambience-gallery img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+/* BOOKING */
+.spa-booking {
+  margin: 50px 0;
+  text-align: center;
+  padding: 40px;
+  background: #f3f5f7;
+  border-radius: 20px;
+}
+
+.spa-booking h2 {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.spa-booking p {
+  font-size: 16px;
+  color: #555;
+}
+
+.spa-btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 30px;
+  background: #3c6e71;
+  color: white;
+  border-radius: 10px;
+  font-size: 18px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.spa-btn:hover {
+  background: #2c4f53;
+}

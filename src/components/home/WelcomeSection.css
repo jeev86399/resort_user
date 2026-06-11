@@ -1,0 +1,38 @@
+.welcome-section {
+  background-color: #fff;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.welcome-container {
+  max-width: 800px;
+  margin: 0 auto;
+  color: #333;
+}
+
+.welcome-container h2 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.welcome-container h3 {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: 2rem;
+  color: #777;
+}
+
+.read-btn {
+  margin-top: 1.5rem;
+  padding: 0.8rem 1.5rem;
+  background-color: transparent;
+  color: #c19b76;
+  border: 2px solid #c19b76;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.read-btn:hover {
+  background-color: #c19b76;
+  color: white;
+}

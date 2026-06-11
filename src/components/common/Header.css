@@ -1,0 +1,117 @@
+/* =============================== */
+/*        LUXURY RESORT NAVBAR     */
+/* =============================== */
+
+.app-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.45); /* reduced blur */
+  backdrop-filter: blur(4px);             /* reduced blur strength */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  z-index: 2000;
+  transition: all 0.3s ease;
+}
+
+.navbar {
+  max-width: 1400px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px; /* reduced space */
+  transition: padding 0.3s ease;
+}
+
+/* ---------------------------------- */
+/* LEFT / RIGHT NAV MENUS (tight)     */
+/* ---------------------------------- */
+
+.nav-left,
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 25px; /* clean spacing */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Bring left close to logo */
+.nav-left {
+  margin-right: 30px;
+}
+
+/* Bring right close to logo */
+.nav-right {
+  margin-left: 30px;
+}
+
+/* ---------------------------------- */
+/* NAV LINKS                           */
+/* ---------------------------------- */
+
+.navbar a {
+  color: #1a1a1a;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+  color: #b68a5c; /* elegant gold hover */
+}
+
+/* ---------------------------------- */
+/* LOGO                                */
+/* ---------------------------------- */
+
+.logo img {
+  height: 80px;
+  width: 100px;
+  display: block;
+  transition: height 0.3s ease;
+}
+
+/* ---------------------------------- */
+/* SCROLL EFFECTS                      */
+/* ---------------------------------- */
+
+.app-header.scrolled {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(6px);
+}
+
+.app-header.scrolled .navbar {
+  padding: 6px 20px; /* shrink */
+}
+
+.app-header.scrolled .nav-left,
+.app-header.scrolled .nav-right {
+  gap: 14px; /* tighter on scroll */
+}
+
+.app-header.scrolled .logo img {
+  height: 60px; /* shrink logo */
+}
+
+/* ---------------------------------- */
+/* RESPONSIVE NAV (future option)     */
+/* ---------------------------------- */
+
+@media (max-width: 950px) {
+  .navbar {
+    justify-content: space-between;
+  }
+
+  .nav-left,
+  .nav-right {
+    display: none; /* hide for mobile – we’ll add hamburger later */
+  }
+
+  .logo img {
+    height: 55px;
+  }
+}
