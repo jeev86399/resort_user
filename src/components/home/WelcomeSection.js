@@ -1,49 +1,67 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios"; // Make sure to npm install axios
+// src/components/home/WelcomeSection.js
+import React, { useEffect, useState } from "react";
 import "./WelcomeSection.css";
+
+// 1. Firebase Imports
+import { db } from "../../services/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 function WelcomeSection() {
   const [readMore, setReadMore] = useState(false);
-  const [content, setContent] = useState({
-    title: "Loading...",
-    subTitle: "",
-    mainText: "",
-    hiddenText: ""
-  });
+  
+  // 2. States for dynamic content
+  const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  const toggleReadMore = () => {
+    setReadMore(!readMore);
+  };
+
+  // 3. Fetch data from siteSettings/welcome
   useEffect(() => {
-    // Fetch data from your Spring Boot Backend
-    axios.get("http://localhost:8080/api/admin/all-rooms")
-      .then(res => {
-        // Find the 'main' document from your Firestore screenshot
-        const data = res.data.find(item => item.id === "main");
-        if (data) {
-          setContent({
-            title: data.heroTitle || "Welcome To Radha Serenity Resort",
-            subTitle: data.subTitle || "Varkala’s Coastal Haven",
-            mainText: data.mainText || "",
-            hiddenText: data.hiddenText || ""
-          });
+    const fetchWelcomeData = async () => {
+      try {
+        const docRef = doc(db, "siteSettings", "welcome");
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setContent(docSnap.data());
+        } else {
+          console.log("No such document in Firebase!");
         }
-      })
-      .catch(err => console.error("Error fetching welcome data", err));
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching welcome data:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchWelcomeData();
   }, []);
+
+  if (loading) return null; // Or a small spinner
+  if (!content) return null;
 
   return (
     <section className="welcome-section">
       <div className="welcome-container">
+        {/* Using dynamic data from Firebase */}
         <h2>{content.title}</h2>
-        <h3>{content.subTitle}</h3>
+        <h3>{content.subtitle}</h3>
+        
         <p>
           {content.mainText}
+          
           {readMore && (
             <>
               <br /><br />
+              {/* This text is now pulled from the 'hiddenText' field in Firebase */}
               {content.hiddenText}
             </>
           )}
         </p>
-        <button className="read-btn" onClick={() => setReadMore(!readMore)}>
+
+        <button className="read-btn" onClick={toggleReadMore}>
           {readMore ? "Read Less" : "Read More"}
         </button>
       </div>
