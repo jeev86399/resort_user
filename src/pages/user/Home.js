@@ -1,55 +1,53 @@
+// src/components/home/Home.js
 import React, { useEffect, useState } from "react";
 import "./Home.css";
 import { Link } from "react-router-dom";
-import axios from "axios";
+
+// 1. Firebase Imports
+import { db } from "../../services/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 function Home() {
-  const [heroData, setHeroData] = useState({
-    heroTitle: "RADHA SERENITY RESORT",
-    heroSubtitle: "Where Nature Meets Pure Luxury",
-    heroVideo: "https://cdn.pixabay.com/video/2024/02/29/202392-918066367_large.mp4"
-  });
+  // 2. States for dynamic content
+  const [content, setContent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
+  // 3. Fetch data from siteSettings/home
   useEffect(() => {
-    const fetchHero = async () => {
+    const fetchHomeData = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/admin/all-rooms");
-        const data = res.data.find(item => item.id === "main");
-        
-        if (data) {
-          // Use functional update (prev) to remove dependencies warning
-          setHeroData(prev => ({
-            heroTitle: data.heroTitle || prev.heroTitle,
-            heroSubtitle: data.heroSubtitle || prev.heroSubtitle,
-            heroVideo: data.heroVideo || prev.heroVideo
-          }));
+        const docRef = doc(db, "siteSettings", "home");
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setContent(docSnap.data());
+        } else {
+          console.log("No such document!");
         }
-      } catch (err) {
-        console.error("Hero data fetch error:", err);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching home data:", error);
+        setLoading(false);
       }
     };
-    fetchHero();
-    
-    // Empty dependency array is now safe because we don't reference 'heroData' directly
+
+    fetchHomeData();
   }, []);
+
+  if (loading) return <div className="loader">Loading...</div>;
+  if (!content) return null;
 
   return (
     <div className="hero-container">
-      {/* Background Video - the 'key' attribute ensures reload on URL change */}
-      <video 
-        autoPlay 
-        loop 
-        muted 
-        playsInline 
-        id="hero-video" 
-        key={heroData.heroVideo}
-      >
-        <source src={heroData.heroVideo} type="video/mp4" />
+      {/* Background Video (Dynamic) */}
+      <video key={content.heroVideo} autoPlay loop muted playsInline id="hero-video">
+        <source src={content.heroVideo} type="video/mp4" />
       </video>
 
+      {/* HERO TEXT (Dynamic) */}
       <div className="hero-content">
-        <h1>{heroData.heroTitle}</h1>
-        <p>{heroData.heroSubtitle}</p>
+        <h1>{content.title}</h1>
+        <p>{content.subtitle}</p>
 
         <Link to="/booking">
           <button className="hero-button">Book Your Stay</button>
