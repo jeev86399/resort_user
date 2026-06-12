@@ -1,36 +1,56 @@
+// src/components/home/About.js
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import "./About.css";
+
+// Firebase Imports
+import { db } from "../../services/firebase";
+import { collection, getDocs, query, orderBy, doc, getDoc } from "firebase/firestore";
 
 function About() {
   const [showMore, setShowMore] = useState(false);
-  const [data, setData] = useState(null);
+  
+  // States for dynamic data
+  const [pageData, setPageData] = useState(null);
+  const [features, setFeatures] = useState([]);
+  const [experts, setExperts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAboutData = async () => {
       try {
-        const res = await axios.get("http://localhost:8080/api/admin/all-rooms");
-        const aboutDoc = res.data.find(item => item.id === "aboutPage");
-        if (aboutDoc) setData(aboutDoc);
-      } catch (err) {
-        console.error("About page fetch error:", err);
+        // 1. Fetch Static Text (Story, Philosophy, Promise)
+        const pageSnap = await getDoc(doc(db, "siteSettings", "aboutPage"));
+        if (pageSnap.exists()) setPageData(pageSnap.data());
+
+        // 2. Fetch Features
+        const featSnap = await getDocs(query(collection(db, "aboutFeatures"), orderBy("order", "asc")));
+        setFeatures(featSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+
+        // 3. Fetch Experts
+        const expSnap = await getDocs(query(collection(db, "aboutExperts"), orderBy("order", "asc")));
+        setExperts(expSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error loading About page:", error);
+        setLoading(false);
       }
     };
     fetchAboutData();
   }, []);
 
-  if (!data) return <div className="pt-40 text-center">Loading Our Story...</div>;
+  if (loading || !pageData) return <div className="loading">Loading our story...</div>;
 
   return (
     <div className="about-page">
       {/* Hero Section */}
       <div className="hero-video-container">
-        <video autoPlay loop muted playsInline className="hero-video" key={data.heroVideo}>
-          <source src={data.heroVideo} type="video/mp4" />
+        <video key={pageData.heroVideo} autoPlay loop muted className="hero-video">
+          <source src={pageData.heroVideo} type="video/mp4" />
         </video>
         <div className="hero-content">
-          <h1>{data.heroTitle}</h1>
-          <p>{data.heroSubtitle}</p>
+          <h1>WELCOME TO RADHA SERENITY RESORT</h1>
+          <p>Step into a world where nature, luxury, and timeless comfort come together.</p>
         </div>
       </div>
 
@@ -38,41 +58,47 @@ function About() {
       <section className="section story">
         <div className="story-text">
           <h2>Our Story</h2>
-          <p>{data.storyText}</p>
+          <p>{pageData.storyText}</p>
         </div>
         <div className="story-image">
-          <img src={data.storyImage} alt="Resort Story" />
+          <img src={pageData.storyImage} alt="Resort Story" />
         </div>
       </section>
 
       {/* Philosophy */}
       <section className="section philosophy">
         <h2>Our Philosophy</h2>
-        <p>{data.philosophyText}</p>
+        <p>{pageData.philosophy}</p>
       </section>
 
-      {/* Unique Features */}
+      {/* Unique Features (Dynamic Grid) */}
       <section className="section features">
         <h2>What Makes Us Unique</h2>
         <div className="feature-cards">
-          {data.features.map((f, i) => (
-            <div key={i} className={`card ${i >= 3 ? (showMore ? "show" : "hidden-card") : ""}`}>
-              <h3>{f.title}</h3>
-              <p>{f.desc}</p>
+          {features.map((feat, idx) => (
+            <div 
+              key={feat.id} 
+              className={`card ${idx > 2 && !showMore ? "hide-on-mobile" : ""} ${(idx > 2 && showMore) ? "show" : ""}`}
+              style={{ display: (idx > 2 && !showMore) ? 'none' : 'block' }}
+            >
+              <h3>{feat.title}</h3>
+              <p>{feat.desc}</p>
             </div>
           ))}
         </div>
-        <button className="toggle-btn" onClick={() => setShowMore(!showMore)}>
-          {showMore ? "Show Less" : "Show More"}
-        </button>
+        {features.length > 3 && (
+          <button className="toggle-btn" onClick={() => setShowMore(!showMore)}>
+            {showMore ? "Show Less" : "Show More"}
+          </button>
+        )}
       </section>
 
-      {/* Experts */}
+      {/* Experts (Dynamic Team) */}
       <section className="section experts">
         <h2>Meet Our Experts</h2>
         <div className="expert-cards">
-          {data.experts.map((exp, i) => (
-            <div key={i} className="expert">
+          {experts.map(exp => (
+            <div className="expert" key={exp.id}>
               <img src={exp.img} alt={exp.name} />
               <h4>{exp.name}</h4>
               <p>{exp.role}</p>
@@ -84,7 +110,7 @@ function About() {
       {/* Promise */}
       <section className="section promise">
         <h2>Our Promise</h2>
-        <p>{data.promiseText}</p>
+        <p>{pageData.promise}</p>
         <button className="cta-button">Book Your Escape</button>
       </section>
     </div>
